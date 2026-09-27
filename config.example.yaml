@@ -1,0 +1,84 @@
+# ============================================================
+# Channel Assistant — client demo config
+# Everything a demo needs lives in THIS one file.
+# Re-cut for a new client in ~10 minutes: change `prospect`,
+# `welcome.text`, and the 10 FAQ items. No code changes.
+# ============================================================
+
+prospect: "BrightPath English Academy"        # <-- replace with the client's business
+
+data_dir: "data"                              # SQLite + local files (gitignored)
+
+welcome:
+  text: |
+    👋 Hi {first_name}! Welcome to {prospect} — I'm the academy assistant.
+
+    I can answer common questions instantly, or pass you to the owner.
+    Pick an option below, or just type your question.
+  buttons:
+    - label: "❓ Browse FAQs"
+      action: faq_menu          # faq_menu | lead_start | owner_handoff
+    - label: "📝 Leave a request"
+      action: lead_start
+    - label: "👤 Talk to the owner"
+      action: owner_handoff
+
+faq:
+  menu_title: "Pick a question — or just type it:"
+  threshold: 2.0                # keyword match sensitivity (lower = answers more)
+  notify_owner: true            # alert owner when the bot can't answer
+  fallback_text: |
+    🤔 I'm not sure about that one — I'll ask the owner and get back to you here shortly.
+
+  items:                        # 10 editable FAQs
+    - keywords: [price, pricing, cost, fee, fees, tuition, how much]
+      question: "How much does the course cost?"
+      answer: "Group courses start at $99/month (3 lessons per week). One-on-one lessons are $25/hour. Ask the owner about current discounts!"
+
+    - keywords: [schedule, timing, time, when, classes, timetable]
+      question: "When do classes happen?"
+      answer: "Group classes run on weekdays at 10:00, 15:00 and 19:00 (60 min each). Weekend intensive groups meet at 11:00 on Saturdays."
+
+    - keywords: [trial, free, demo, sample, test class]
+      question: "Is there a free trial class?"
+      answer: "Yes! Your first group lesson is completely free. Press '📝 Leave a request' and we'll reserve a seat for you."
+
+    - keywords: [certificate, certification, diploma, ielts, exam]
+      question: "Do I get a certificate?"
+      answer: "Yes — after finishing a level you receive a certificate aligned with CEFR (A1–C1). We also run IELTS preparation modules."
+
+    - keywords: [refund, cancel, cancellation, money back]
+      question: "What is the refund policy?"
+      answer: "Full refund within the first 2 paid weeks, no questions asked. After that, unused months are refundable pro-rata."
+
+    - keywords: [level, placement, test, beginner, advanced, beginner]
+      question: "How do I know my level?"
+      answer: "We do a free 15-minute placement test (speaking + grammar). Press '📝 Leave a request' and mention 'placement test'."
+
+    - keywords: [group, size, students, people, class size]
+      question: "How big are the groups?"
+      answer: "Small groups only — 6 to 10 students, so everyone gets speaking time."
+
+    - keywords: [pay, payment, method, card, upi, transfer, cash]
+      question: "How can I pay?"
+      answer: "Card, bank transfer, UPI or cash at the front desk. Monthly invoices are sent automatically."
+
+    - keywords: [material, book, books, recording, homework]
+      question: "Are materials and recordings included?"
+      answer: "Yes — digital workbooks, vocabulary decks and lesson recordings are included for all students."
+
+    - keywords: [enroll, join, start, sign up, registration, register]
+      question: "How do I enroll?"
+      answer: "Press '📝 Leave a request' and tell us your preferred time — the owner will confirm your spot within a few hours."
+
+lead:
+  thank_you: |
+    ✅ Thanks! Your request is saved — the owner will get back to you soon.
+    Meanwhile, feel free to ask me anything else.
+
+owner:
+  id: ""                        # <-- REQUIRED for alerts: your Telegram user id (send /id to your bot)
+  username: "@brightpath_owner" # <-- optional: shown to users in the handoff reply
+
+group:
+  reply_mode: "mention"         # mention (only when @mentioned / replied to) | off
