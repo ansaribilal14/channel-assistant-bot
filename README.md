@@ -49,7 +49,9 @@ pip install -r requirements.txt
 python bot.py --check         # validates config, prints what's set/missing
 ```
 
-**4. Get your owner id** — run the bot, open your bot in Telegram, send `/id`, copy the user id into `config.yaml → owner.id` (or `.env → OWNER_ID`). **Important:** send `/start` to the bot from your own account first — Telegram does not allow bots to message a user first.
+**4. Get your owner id (two ways)**
+- *Auto:* `python3 scripts/bootstrap_owner.py` — it waits for your first message to the bot, saves you as owner, confirms, and starts the bot itself. One command, done.
+- *Manual:* run the bot, DM it `/id`, paste the user id into `config.yaml → owner.id` (or `.env → OWNER_ID`). **Important:** send `/start` to the bot from your own account first — Telegram does not allow bots to message a user first.
 
 **5. Run**
 ```bash
