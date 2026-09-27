@@ -82,3 +82,9 @@ owner:
 
 group:
   reply_mode: "mention"         # mention (only when @mentioned / replied to) | off
+  welcome_new_members: true     # auto-welcome people who join the group
+  welcome_text: |
+    👋 Welcome {first_name} to {prospect}!
+
+    I'm the group assistant — mention @{bot_username} with any question
+    and I'll answer instantly. Tap below or DM me to leave a request.

@@ -25,7 +25,7 @@ async def alert_owner(context: ContextTypes.DEFAULT_TYPE, cfg: Config, text: str
         log.warning("Owner alert suppressed (owner id not set): %s", text[:120])
         return
     try:
-        await context.bot.send_message(chat_id=int(owner_id), text=text)
+        await context.bot.send_message(chat_id=int(owner_id), text=text, parse_mode="HTML")
     except Exception as exc:  # noqa: BLE001
         log.warning(
             "Owner alert failed (%s). The owner must /start the bot once before "
@@ -68,7 +68,7 @@ async def cmd_leads(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             f"  {html.escape(r['name'])} — {html.escape(r['contact'])}\n"
             f"  {html.escape((r['question'] or '')[:120])}"
         )
-    await update.message.reply_text("Last leads:\n\n" + "\n\n".join(lines))
+    await update.message.reply_text("Last leads:\n\n" + "\n\n".join(lines), parse_mode="HTML")
 
 
 async def cmd_answered(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -98,7 +98,8 @@ async def cmd_pending(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     ]
     await update.message.reply_text(
         "Questions the bot couldn't answer:\n\n" + "\n\n".join(lines)
-        + "\n\nWhen handled: /resolved <id>. Consider adding these to your FAQs."
+        + "\n\nWhen handled: /resolved <id>. Consider adding these to your FAQs.",
+        parse_mode="HTML",
     )
 
 
@@ -138,4 +139,4 @@ async def cmd_reload(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             f"Reloaded ✅ — {len(fresh.faqs)} FAQs, prospect “{fresh.prospect}”."
         )
     except Exception as exc:  # noqa: BLE001
-        await update.message.reply_text(f"Reload failed: {html.escape(str(exc))}")
+        await update.message.reply_text(f"Reload failed: {html.escape(str(exc))}", parse_mode="HTML")

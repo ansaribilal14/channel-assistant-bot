@@ -12,6 +12,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from core import store
 from core.config import Config
+from core.text import safe_html
 from handlers.owner import alert_owner
 
 log = logging.getLogger(__name__)
@@ -67,7 +68,9 @@ async def got_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         question=question,
     )
 
-    await update.message.reply_text(cfg.lead_thank_you)
+    await update.message.reply_text(
+        safe_html(cfg.lead_thank_you), parse_mode="HTML"
+    )
 
     await alert_owner(
         context, cfg,

@@ -7,6 +7,7 @@ new client in minutes by editing a single file. No code changes needed.
 
 from __future__ import annotations
 
+import html
 import os
 from dataclasses import dataclass
 from typing import Any
@@ -19,6 +20,12 @@ class ConfigError(Exception):
 
 
 _REQUIRED_TOP = ("prospect", "welcome", "faq")
+
+DEFAULT_GROUP_WELCOME = (
+    "👋 Welcome {first_name} to {prospect}!\n\n"
+    "I'm the group assistant — mention @{bot_username} with any question, "
+    "or tap a button below."
+)
 
 
 @dataclass
@@ -41,6 +48,8 @@ class Config:
     owner_id: str
     owner_username: str
     group_reply_mode: str
+    group_welcome_new_members: bool
+    group_welcome_text: str
     threshold: float
     data_dir: str
     path: str = ""
@@ -113,6 +122,8 @@ class Config:
             owner_id=str(owner.get("id") or "").strip(),
             owner_username=str(owner.get("username") or "").strip(),
             group_reply_mode=str(group.get("reply_mode", "mention")).lower(),
+            group_welcome_new_members=bool(group.get("welcome_new_members", True)),
+            group_welcome_text=str(group.get("welcome_text") or DEFAULT_GROUP_WELCOME),
             threshold=threshold,
             data_dir=str(raw.get("data_dir", "data")),
             path=path,
@@ -121,10 +132,11 @@ class Config:
 
     # --------------------------------------------------------------- helpers
     def render(self, text: str, **kwargs: str) -> str:
-        """Format a config template ({first_name}, {prospect}, ...). `prospect`
-        defaults to this config's value. Tolerant: unknown placeholders stay
-        as-is instead of raising."""
-        kwargs.setdefault("prospect", self.prospect)
+        """Format a config template ({first_name}, {prospect}, {bot_username}, ...).
+        `prospect` defaults to this config's value, HTML-escaped (a prospect like
+        "Q&A Academy" must not break Telegram HTML parsing). Tolerant: unknown
+        placeholders stay as-is instead of raising."""
+        kwargs.setdefault("prospect", html.escape(self.prospect, quote=False))
 
         class _SafeDict(dict):
             def __missing__(self, key: str) -> str:

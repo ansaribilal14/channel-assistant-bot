@@ -25,9 +25,11 @@ Channel Assistant (this repo)
 | "I'll ask the owner" when it can't answer | fallback text + unanswered log + owner alert |
 | Lead capture in bot DM | 3-step conversation → SQLite (`data/assistant.db`) |
 | Owner alert | instant Telegram message to `owner.id` |
+| Auto-welcome new group members | `group.welcome_text` → `new_members` handler (bot also introduces itself when added to a group) |
 | One config file per prospect | everything client-specific lives in `config.yaml` |
 | Local long polling, no paid deps | `python bot.py` — only `python-telegram-bot` |
 | Keyword matching, LLM optional | pure keyword by default; free OpenAI-compatible tier optional |
+| Formatting-safe messages | `core/text.py` escapes `<`/`&` in config text; `<b> <i> <u> <s> <code> <pre>` whitelisted |
 
 ---
 
@@ -67,6 +69,7 @@ Docker alternative: `docker build -t channel-assistant . && docker run --env-fil
 5. `📝 Leave a request` → name → contact → need → thank-you + **lead alert**
 6. Owner commands: `/leads` · `/answered <id>` · `/pending` · `/resolved <id>` · `/leadscsv` (CSV export)
 7. `/reload` after editing `config.yaml` — no restart needed
+8. Add the bot to a test group → it introduces itself; kick & re-add a friend (or your second account) → **auto-welcome with buttons**; mention `@yourbot how much is it?` in the group → keyword answer with a DM link for requests
 
 ## Owner commands (owner only)
 
@@ -122,7 +125,8 @@ WantedBy=multi-user.target
 ## Troubleshooting
 
 - **Owner alerts don't arrive** → the owner hasn't sent `/start` to the bot yet (Telegram restriction), or `owner.id` is empty.
-- **Bot is silent in groups** → by design it only answers when @mentioned or replied to (`group.reply_mode`).
+- **Bot is silent in groups** → with BotFather privacy mode ON (default) the bot sees mentions, replies and join events only — exactly enough for mention mode + auto-welcome. For free-text listening in groups, disable privacy mode in BotFather (`/setprivacy` → Disable) and re-add the bot.
+- **FAQ answer shows raw `&amp;` or breaks with "can't parse entities"** → shouldn't happen anymore (`core/text.py` escapes config text, whitelists formatting tags). If you intentionally want `<b>` in answers, it's supported. Arbitrary tags like `<a>` are intentionally not whitelisted.
 - **Startup warning about per_message** → expected and harmless; already suppressed in code.
 - **It missed a question I expected it to answer** → lower `faq.threshold` (e.g. 1.5) or add keywords.
 
@@ -132,13 +136,14 @@ WantedBy=multi-user.target
 bot.py                  entry point (--check for dry validation)
 core/config.py          one-file client config loader + validation
 core/matcher.py         keyword scoring (exact/phrase/prefix/substring)
+core/text.py            safe_html: escape < & then whitelist b/i/u/s/code/pre
 core/llm.py             optional free OpenAI-compatible fallback
 core/store.py           SQLite: leads + unanswered (+ CSV export)
-handlers/welcome.py     /start + welcome buttons
-handlers/faq.py         FAQ menu, keyword answering, group mode, handoff
+handlers/welcome.py     /start + welcome buttons (group-aware)
+handlers/faq.py         FAQ menu, keyword answering, group mode, auto-welcome, handoff
 handlers/lead.py        3-step lead capture conversation
 handlers/owner.py       owner alerts + management commands
-tests/test_smoke.py     11 tests: config, matcher, store, wiring
+tests/test_smoke.py     17 tests: config, matcher, safe_html, store, group welcome, wiring
 ```
 
 ## Credits & provenance

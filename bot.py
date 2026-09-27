@@ -110,6 +110,8 @@ def build_application(cfg: Config, token: str) -> Application:
     app.add_handler(
         MessageHandler(filters.ChatType.GROUPS & filters.TEXT & ~filters.COMMAND, faq.group_text)
     )
+    # Auto-welcome new group members + self-intro when the bot is added to a group
+    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, faq.new_members))
 
     # --- Owner tools
     app.add_handler(CommandHandler("leads", owner.cmd_leads))

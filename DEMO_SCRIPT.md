@@ -23,7 +23,8 @@
 | 5 | **cut to your phone**: owner alert with the exact question | the owner never misses a lead |
 | 6 | tap **📝 Leave a request** → fill 3 steps | lead capture end-to-end |
 | 7 | **cut to phone again**: new-lead alert; desktop: `/leads`, `/leadscsv` | leads are stored & exportable |
-| 8 | end card: "Re-cut for YOUR business in 10 minutes — one config file." | the actual offer |
+| 8 | (bonus) add bot to a test group → self-intro; a member joins → auto-welcome; `@bot price?` in group → answer | the group story from the pitch |
+| 9 | end card: "Re-cut for YOUR business in 10 minutes — one config file." | the actual offer |
 
 Record with any screen recorder (OBS / phone screen record). No editing needed —
 one clean take beats a produced video for credibility.
@@ -45,6 +46,9 @@ one clean take beats a produced video for credibility.
 - [ ] Lead flow completes; lead appears in `/leads` and `/leadscsv`
 - [ ] `/reload` picks up config edits without restart
 - [ ] In a group: bot answers only when @mentioned or replied to
+- [ ] New member joins the group → auto-welcome message with buttons appears
+- [ ] Bot added to a fresh group → self-intro message appears
+- [ ] An FAQ answer containing `<` or `&` renders correctly (edit one answer to "Cost < $99 & books" and test)
 - [ ] `python bot.py --check` passes after every config edit
 
 ## Outreach tie-in
